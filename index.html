@@ -211,6 +211,32 @@ td:first-child { text-align: center; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .error { color: var(--red); text-align: center; padding: 2rem; }
 
+/* Copy bar */
+.copy-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+.copy-btn {
+  padding: 0.5rem 1.25rem;
+  border: none;
+  border-radius: 6px;
+  background: #1a1a2e;
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: background 0.15s;
+}
+.copy-btn:hover { background: #2d2d5e; }
+.copy-btn.ok { background: #16a34a; }
+.copy-label {
+  font-size: 0.65rem;
+  color: var(--muted);
+}
+
 /* Footer */
 .footer {
   text-align: center;
@@ -234,6 +260,10 @@ td:first-child { text-align: center; }
   <div class="header">
     <h1>🏀 2026 <span>NBA Draft</span> Declarations</h1>
     <div class="subtitle">Players who have officially declared for the 2026 NBA Draft</div>
+  </div>
+  <div class="copy-bar">
+    <button class="copy-btn" id="copyBtn" onclick="copyForPresto()">📋 Copy for Presto</button>
+    <span class="copy-label" id="copyLabel">Click to copy declared players table as Presto HTML</span>
   </div>
   <div id="statsBar" class="stats-bar"></div>
   <div id="content">
@@ -303,6 +333,54 @@ function rankClass(pick) {
   return 'rank-second';
 }
 
+let _declaredPlayers = []; // stored globally for Presto copy
+
+function copyForPresto() {
+  if (!_declaredPlayers.length) return;
+  const thStyle = 'border: none; padding:4px 0 4px 6px; height:40px; min-width:40px; white-space:nowrap; font-weight:bold; font-size:13px';
+  const thStyleLeft = thStyle + '; text-align:left';
+  let h = '<div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">\n';
+  h += '<div style="font-family:Arial,Helvetica,sans-serif;padding:8px 12px;background:#1a1a2e;color:#fff;font-size:14px;font-weight:700;letter-spacing:0.5px;margin-top:24px;margin-bottom:0;border-radius:5px 5px 0 0"><span style="font-size:16px;margin-right:6px">\u{1F3C0}</span> 2026 NBA Draft Declarations</div>\n';
+  h += '<div style="overflow-x:auto; -webkit-overflow-scrolling:touch; width:100%;"><table style="border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px; width: 100%; border: none;">\n';
+  h += '<thead>\n<tr style="background-color: #f2f2f2;">\n';
+  h += `<th style="${thStyle}">PROJ</th>\n`;
+  h += `<th style="${thStyleLeft}">PLAYER</th>\n`;
+  h += `<th style="${thStyle}">POS</th>\n`;
+  h += `<th style="${thStyleLeft}">SCHOOL</th>\n`;
+  h += `<th style="${thStyleLeft}">AGE</th>\n`;
+  h += '</tr>\n</thead>\n<tbody>\n';
+
+  _declaredPlayers.forEach((p, i) => {
+    const bg = i % 2 === 0 ? '#ffffff' : '#f2f2f2';
+    const tdStyle = 'border: none; height:40px; padding:4px 0 4px 6px; min-width:40px; white-space:nowrap';
+    const pickLabel = p.pick ? '#' + p.pick : 'ND';
+    h += `<tr style="background-color:${bg};">\n`;
+    h += `<td style="${tdStyle}; text-align:center"><strong>${pickLabel}</strong></td>\n`;
+    h += `<td style="${tdStyle}; text-align:left; min-width:140px"><strong>${p.name}</strong></td>\n`;
+    h += `<td style="${tdStyle}; text-align:center; font-size:12px; color:#666">${p.position}</td>\n`;
+    h += `<td style="${tdStyle}; text-align:left; color:#555">${p.school}</td>\n`;
+    h += `<td style="${tdStyle}; text-align:left; font-size:12px; color:#888">${p.ageText}</td>\n`;
+    h += '</tr>\n';
+  });
+
+  h += '</tbody></table></div>\n';
+  h += '<div style="padding:8px; font-size:13px; font-style:italic;">* Projected pick based on HoopsMatic Draft Predictor aggregate rankings</div>\n';
+  h += '</div>';
+
+  navigator.clipboard.writeText(h).then(() => {
+    const btn = document.getElementById('copyBtn');
+    const label = document.getElementById('copyLabel');
+    btn.textContent = '\u2705 Copied!';
+    btn.className = 'copy-btn ok';
+    label.textContent = 'Paste into Presto Source/HTML mode';
+    setTimeout(() => {
+      btn.textContent = '\u{1F4CB} Copy for Presto';
+      btn.className = 'copy-btn';
+      label.textContent = 'Click to copy declared players table as Presto HTML';
+    }, 3000);
+  });
+}
+
 async function init() {
   try {
     const resp = await fetch('https://hoopsmatic.com/api/rm-draft');
@@ -347,6 +425,9 @@ async function init() {
       const bLast = b.name.split(' ').pop();
       return aLast.localeCompare(bLast);
     });
+
+    // Store for Presto copy
+    _declaredPlayers = declared;
 
     // Sort not-yet same way
     notYet.sort((a, b) => {
