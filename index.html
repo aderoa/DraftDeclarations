@@ -341,7 +341,6 @@ function copyForPresto() {
   const thStyle = 'border: none; padding:4px 0 4px 6px; height:40px; min-width:40px; white-space:nowrap; font-weight:bold; font-size:13px';
   const thStyleLeft = thStyle + '; text-align:left';
   let h = '<div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">\n';
-  h += '<div style="font-family:Arial,Helvetica,sans-serif;padding:8px 12px;background:#1a1a2e;color:#fff;font-size:14px;font-weight:700;letter-spacing:0.5px;margin-top:24px;margin-bottom:0;border-radius:5px 5px 0 0"><span style="font-size:16px;margin-right:6px">\u{1F3C0}</span> 2026 NBA Draft Declarations</div>\n';
   h += '<p style="font-size:14px;color:#333;margin:12px 0 16px;font-family:Arial,sans-serif">The 2026 draft is projected to be one of the best in recent memory. With March Madness in the rearview, we jump-start the process by tracking the players who have decided to put their names in the hat for the June ceremony. Here\'s the early-entry list as of now:</p>\n';
   h += '<div style="overflow-x:auto; -webkit-overflow-scrolling:touch; width:100%;"><table style="border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px; width: 100%; border: none;">\n';
   h += '<thead>\n<tr style="background-color: #f2f2f2;">\n';
@@ -366,7 +365,7 @@ function copyForPresto() {
   });
 
   h += '</tbody></table></div>\n';
-  h += '<div style="padding:8px; font-size:13px; font-style:italic;">* Projected pick based on our Aggregated Mock Draft</div>\n';
+  h += '<div style="padding:8px; font-size:13px; font-style:italic;">* Projected pick based on our Aggregated Mock Draft (ND = Not Drafted)</div>\n';
   h += '</div>';
 
   navigator.clipboard.writeText(h).then(() => {
