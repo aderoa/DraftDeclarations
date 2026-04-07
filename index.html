@@ -260,6 +260,7 @@ td:first-child { text-align: center; }
   <div class="header">
     <h1>🏀 2026 <span>NBA Draft</span> Declarations</h1>
     <div class="subtitle">Players who have officially declared for the 2026 NBA Draft</div>
+    <p style="font-size:0.82rem;color:var(--text2);max-width:640px;margin:0.5rem auto 0;text-align:center;line-height:1.6">The 2026 draft is projected to be one of the best in recent memory. With March Madness in the rearview, we jump-start the process by tracking the players who have decided to put their names in the hat for the June ceremony. Here's the early-entry list as of now:</p>
   </div>
   <div class="copy-bar">
     <button class="copy-btn" id="copyBtn" onclick="copyForPresto()">📋 Copy for Presto</button>
@@ -341,6 +342,7 @@ function copyForPresto() {
   const thStyleLeft = thStyle + '; text-align:left';
   let h = '<div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">\n';
   h += '<div style="font-family:Arial,Helvetica,sans-serif;padding:8px 12px;background:#1a1a2e;color:#fff;font-size:14px;font-weight:700;letter-spacing:0.5px;margin-top:24px;margin-bottom:0;border-radius:5px 5px 0 0"><span style="font-size:16px;margin-right:6px">\u{1F3C0}</span> 2026 NBA Draft Declarations</div>\n';
+  h += '<p style="font-size:14px;color:#333;margin:12px 0 16px;font-family:Arial,sans-serif">The 2026 draft is projected to be one of the best in recent memory. With March Madness in the rearview, we jump-start the process by tracking the players who have decided to put their names in the hat for the June ceremony. Here\'s the early-entry list as of now:</p>\n';
   h += '<div style="overflow-x:auto; -webkit-overflow-scrolling:touch; width:100%;"><table style="border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px; width: 100%; border: none;">\n';
   h += '<thead>\n<tr style="background-color: #f2f2f2;">\n';
   h += `<th style="${thStyle}">PROJ</th>\n`;
