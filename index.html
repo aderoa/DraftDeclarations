@@ -385,7 +385,18 @@ function copyForPresto() {
 
 async function init() {
   try {
-    const resp = await fetch('https://hoopsmatic.com/api/rm-draft');
+    // Detect hard-refresh (Ctrl+F5 / Cmd+Shift+R) via the Performance API
+    // and forward as ?nocache=1 so the Worker bypasses its cache too.
+    // Also honor an explicit ?nocache in the URL for manual forcing.
+    let bustCache = new URLSearchParams(location.search).has('nocache');
+    if (!bustCache) {
+      try {
+        const nav = performance.getEntriesByType('navigation')[0];
+        if (nav && nav.type === 'reload') bustCache = true;
+      } catch (e) { /* older browsers: fall back to normal refresh */ }
+    }
+    const url = 'https://hoopsmatic.com/api/rm-draft' + (bustCache ? '?nocache=1' : '');
+    const resp = await fetch(url, { cache: bustCache ? 'no-store' : 'default' });
     if (!resp.ok) throw new Error('Failed to fetch');
     const text = await resp.text();
     const rows = parseCSV(text);
