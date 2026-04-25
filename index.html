@@ -438,14 +438,27 @@ async function init() {
     const declared = players.filter(p => p.entered);
     const notYet = players.filter(p => !p.entered);
 
+    // Sort-name overrides for prospects whose family name doesn't sit at the
+    // end of their full name string. Add new entries here as needed — the
+    // value should be the full name reordered for sort purposes (the first
+    // word becomes the sort key via name.split(' ').pop()-style logic, but
+    // because we look up the override directly we can just put the surname
+    // first).
+    const SORT_NAME_OVERRIDES = {
+      'Marc-Owen Fodzo Dada': 'Fodzo Dada',
+    };
+    const sortKey = (name) => {
+      if (SORT_NAME_OVERRIDES[name]) return SORT_NAME_OVERRIDES[name];
+      // Default: last whitespace-separated token (works for typical Anglo names)
+      return name.split(' ').pop();
+    };
+
     // Sort declared: by pick (ascending), NR at bottom sorted by last name
     declared.sort((a, b) => {
       if (a.pick && b.pick) return a.pick - b.pick;
       if (a.pick && !b.pick) return -1;
       if (!a.pick && b.pick) return 1;
-      const aLast = a.name.split(' ').pop();
-      const bLast = b.name.split(' ').pop();
-      return aLast.localeCompare(bLast);
+      return sortKey(a.name).localeCompare(sortKey(b.name));
     });
 
     // Store for Presto copy
@@ -456,9 +469,7 @@ async function init() {
       if (a.pick && b.pick) return a.pick - b.pick;
       if (a.pick && !b.pick) return -1;
       if (!a.pick && b.pick) return 1;
-      const aLast = a.name.split(' ').pop();
-      const bLast = b.name.split(' ').pop();
-      return aLast.localeCompare(bLast);
+      return sortKey(a.name).localeCompare(sortKey(b.name));
     });
 
     // Stats
